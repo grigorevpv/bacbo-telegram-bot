@@ -1,4 +1,16 @@
-import { Context, Telegraf } from 'telegraf';
-import { Update } from 'typegram';
+import cron from 'node-cron';
+import { Telegram } from 'telegraf';
 
-const bot: Telegraf<Context<Update>> = new Telegraf(process.env.BOT_TOKEN as string);
+const telegram: Telegram = new Telegram(process.env.BOT_TOKEN as string);
+
+cron.schedule("* * * * *", () => {
+    telegram.sendMessage(
+        process.env.CHAT_ID as string,
+        ` Привет! Я буду иногда напоминать полить нашего друга, 
+        а именно пн/чт в 17:00. Большое спасибо, что проявляешь заботу о нём,
+        я это очень ценю.
+
+        Хорошего тебе вечера ;)
+        `
+    );
+});
