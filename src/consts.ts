@@ -1,0 +1,1 @@
+export const botSignature = 'Your BacBo bot'
