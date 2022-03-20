@@ -2,10 +2,11 @@ import cron from 'node-cron'
 import { Telegram, Telegraf } from 'telegraf'
 
 import { botSignature } from './consts'
-import { phrases } from './phrases'
+import { getRequest, HttpRequest } from './transport/httpRequest'
 
 const telegram: Telegram = new Telegram(process.env.BOT_TOKEN as string)
 const bot = new Telegraf(process.env.BOT_TOKEN as string)
+const req = new HttpRequest()
 
 cron.schedule('0 7 * * 1,4', () => {
     telegram.sendMessage(
@@ -14,17 +15,17 @@ cron.schedule('0 7 * * 1,4', () => {
     )
 })
 
-bot.on('message', (ctx, next) => {
+bot.on('message', async (ctx, next) => {
     try {
         const id = Number(process.env.TRACKED_MEMBER_ID)
 
         if (ctx.update.message.from.id === id) {
-            const phraseId = Math.ceil((Math.random() * 10) % phrases.length)
-            const phrase = `${phrases[phraseId]} ${botSignature}`
+            const { compliment } = await getRequest(req, 'complimentr.com', '/api')
+            const complimentWithSignature = `${compliment}. ${botSignature}`
 
             telegram.sendMessage(
                 process.env.CHAT_ID as string,
-                phrase
+                complimentWithSignature
             )
         }
     } catch (e) {
