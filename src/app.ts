@@ -8,10 +8,10 @@ const telegram: Telegram = new Telegram(process.env.BOT_TOKEN as string)
 const bot = new Telegraf(process.env.BOT_TOKEN as string)
 const req = new HttpRequest()
 
-cron.schedule('0 7 * * 1,4', () => {
+cron.schedule('0 9 * * 2,5', () => {
     telegram.sendMessage(
         process.env.CHAT_ID as string,
-        'Привет! Я буду иногда напоминать полить нашего друга, а именно пн/чт в 17:00. Большое спасибо, что проявляешь заботу о нём, я это очень ценю. Хорошего тебе вечера ;)'
+        'Привет! Я буду иногда напоминать полить нашего друга, а именно вт/пт в 11:00. Большое спасибо, что проявляешь заботу о нём, я это очень ценю. Хорошего тебе вечера ;)'
     )
 })
 
