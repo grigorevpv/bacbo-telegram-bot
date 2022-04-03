@@ -1,5 +1,7 @@
 import cron, { ScheduledTask } from 'node-cron'
 
+const scheduledTasksArr: ScheduledTask[] = []
+
 const defaultCronDate: CroneDate = {
     minute: '*',
     hour: '*',
@@ -36,14 +38,14 @@ function randomNumber(min: number, max: number): number {
 }
 
 function taskFnGenerator(numberOfTasks: number, dateGenerator: () => Partial<CroneDate>): Array<(fn: () => void) => ScheduledTask | null> {
-    const taskFnArr = []
+    const tasksFnArr = []
     
     for (let i = 0; i < numberOfTasks; i++) {
         const date = dateGenerator()
-        taskFnArr.push((executableFn: () => void) => createTask(date, executableFn))
+        tasksFnArr.push((executableFn: () => void) => createTask(date, executableFn))
     }
     
-    return taskFnArr
+    return tasksFnArr
 }
 
 function createDaylyCronDate(fromHour: number,toHour: number): Partial<CroneDate> {
@@ -56,6 +58,25 @@ function createDaylyCronDate(fromHour: number,toHour: number): Partial<CroneDate
     }
 }
 
-function createDaylyCronDateFrom9To18(): () => Partial<CroneDate> {
-    return () => createDaylyCronDate(9, 18)
+export function createDaylyCronDateFrom9To18(): Partial<CroneDate> {
+    return createDaylyCronDate(9, 18)
+}
+
+export function createDaylyCronTasks(
+    tasksCount: number,
+    cronDate: () => Partial<CroneDate>,
+    executedFn: () => void
+): void {
+    const tasks = taskFnGenerator(tasksCount, cronDate)
+    // Clear scheduled tasks
+    scheduledTasksArr.forEach((task) => task.stop())
+    scheduledTasksArr.length = 0
+    // Add new tasks
+    tasks.forEach((taskFn) => {
+        let scheduledTask = taskFn(executedFn)
+
+        if (scheduledTask) {
+            scheduledTasksArr.push(scheduledTask)
+        }
+    })
 }

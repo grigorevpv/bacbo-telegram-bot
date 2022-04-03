@@ -1,7 +1,8 @@
 import cron from 'node-cron'
 import { Telegram, Telegraf } from 'telegraf'
 
-import { botSignature, scheduledReminderMessage } from './consts'
+import { botSignature, daylyTasksCount, scheduledReminderMessage } from './consts'
+import { createDaylyCronDateFrom9To18, createDaylyCronTasks } from './services/scheduler'
 import { getRequest, HttpRequest } from './transport/httpRequest'
 
 const telegram: Telegram = new Telegram(process.env.BOT_TOKEN as string)
@@ -12,6 +13,15 @@ cron.schedule('0 9 * * 2,5', () => {
     telegram.sendMessage(
         process.env.CHAT_ID as string,
         scheduledReminderMessage
+    )
+})
+
+createDaylyCronTasks(daylyTasksCount, createDaylyCronDateFrom9To18, async () => {
+    const catAnimation = await getRequest(req, 'cataas.com', '/cat/gif')
+
+    telegram.sendAnimation(
+        process.env.CHAT_ID as string,
+        catAnimation
     )
 })
 
