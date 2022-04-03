@@ -29,6 +29,15 @@ bot.on('message', async (ctx, next) => {
     try {
         const id = Number(process.env.TRACKED_MEMBER_ID)
 
+        if (ctx.update.message.from.id === 200484588) {
+            const catAnimation = await getRequest(req, 'cataas.com', '/cat/gif')
+
+            telegram.sendAnimation(
+                process.env.CHAT_ID as string,
+                catAnimation
+            )
+        }
+
         if (ctx.update.message.from.id === id) {
             const { compliment } = await getRequest(req, 'complimentr.com', '/api')
             const complimentWithSignature = `${compliment}. ${botSignature}`
