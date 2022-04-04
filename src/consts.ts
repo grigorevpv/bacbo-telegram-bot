@@ -7,3 +7,4 @@ export const daylyTasksCount = 3
 
 // url values
 export const catAnimationUrl = 'https://cataas.com/cat/gif'
+export const catPhotoUrl = 'https://cataas.com/cat'
