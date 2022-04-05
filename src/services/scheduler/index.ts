@@ -1,6 +1,10 @@
 import cron, { ScheduledTask } from 'node-cron'
+import { scheduledTasksPicture, scheduledTasksReminder } from '../../consts'
 
-const scheduledTasksArr: ScheduledTask[] = []
+const scheduledTasksMap: Record<ScheduledTaskName, ScheduledTask[]> = {
+    [scheduledTasksReminder]: [],
+    [scheduledTasksPicture]: [],
+}
 
 const defaultCronDate: CroneDate = {
     minute: '*',
@@ -62,21 +66,22 @@ export function createDaylyCronDateFrom9To18(): Partial<CroneDate> {
     return createDaylyCronDate(9, 18)
 }
 
-export function createDaylyCronTasks(
+export function createCronTasks(
     tasksCount: number,
+    taskName: ScheduledTaskName,
     cronDate: () => Partial<CroneDate>,
     executedFn: () => void
 ): void {
     const tasks = taskFnGenerator(tasksCount, cronDate)
     // Clear scheduled tasks
-    scheduledTasksArr.forEach((task) => task.stop())
-    scheduledTasksArr.length = 0
+    scheduledTasksMap[taskName].forEach(task => task.stop())
+    scheduledTasksMap[taskName].length = 0
     // Add new tasks
     tasks.forEach((taskFn) => {
         let scheduledTask = taskFn(executedFn)
 
         if (scheduledTask) {
-            scheduledTasksArr.push(scheduledTask)
+            scheduledTasksMap[taskName].push(scheduledTask)
         }
     })
 }

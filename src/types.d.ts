@@ -5,3 +5,7 @@ type CroneDate = {
     month: string;
     dayOfWeek: string;
 }
+
+type ScheduledTaskNameReminder = 'reminder'
+type ScheduledTaskNamePicture = 'picture'
+type ScheduledTaskName = ScheduledTaskNameReminder | ScheduledTaskNamePicture

@@ -4,7 +4,12 @@ export const scheduledReminderMessage = 'Привет! Я буду иногда 
 
 // Number values
 export const daylyTasksCount = 3
+export const reminderTasksCount = 1
 
-// url values
+// Url values
 export const catAnimationUrl = 'https://cataas.com/cat/gif'
 export const catPhotoUrl = 'https://cataas.com/cat'
+
+// Schedule task names
+export const scheduledTasksReminder: ScheduledTaskNameReminder = 'reminder'
+export const scheduledTasksPicture: ScheduledTaskNamePicture = 'picture'

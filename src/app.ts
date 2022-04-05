@@ -1,22 +1,26 @@
-import cron from 'node-cron'
 import { Telegram, Telegraf } from 'telegraf'
 
-import { botSignature, catAnimationUrl, catPhotoUrl, daylyTasksCount, scheduledReminderMessage } from './consts'
-import { createDaylyCronDateFrom9To18, createDaylyCronTasks } from './services/scheduler'
+import { botSignature, catPhotoUrl, daylyTasksCount, reminderTasksCount, scheduledReminderMessage, scheduledTasksPicture, scheduledTasksReminder } from './consts'
+import { createDaylyCronDateFrom9To18, createCronTasks } from './services/scheduler'
 import { getRequest, HttpRequest } from './transport/httpRequest'
 
 const telegram: Telegram = new Telegram(process.env.BOT_TOKEN as string)
 const bot = new Telegraf(process.env.BOT_TOKEN as string)
 const req = new HttpRequest()
 
-cron.schedule('0 9 * * 2,5', () => {
-    telegram.sendMessage(
-        process.env.CHAT_ID as string,
-        scheduledReminderMessage
-    )
-})
+createCronTasks(
+    reminderTasksCount,
+    scheduledTasksReminder,
+    () => ({minute: '0', hour: '8', dayOfWeek: '2,5'}),
+    () => {
+        telegram.sendMessage(
+            process.env.CHAT_ID as string,
+            scheduledReminderMessage
+        )
+    }
+)
 
-createDaylyCronTasks(daylyTasksCount, createDaylyCronDateFrom9To18, async () => {
+createCronTasks(daylyTasksCount, scheduledTasksPicture, createDaylyCronDateFrom9To18, async () => {
     const { compliment } = await getRequest(req, 'complimentr.com', '/api')
     const complimentWithSignature = `${compliment}. ${botSignature}`
 
