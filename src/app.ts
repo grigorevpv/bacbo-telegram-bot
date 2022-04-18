@@ -1,8 +1,19 @@
 import { Telegram, Telegraf } from 'telegraf'
 
-import { botSignature, catPhotoUrl, daylyTasksCount, reminderTasksCount, scheduledReminderMessage, scheduledTasksPicture, scheduledTasksReminder } from './consts'
+import {
+    botSignature,
+    catPhotoUrl,
+    daylyTasksCount,
+    defaultTextLength,
+    defaultTextSize,
+    reminderTasksCount,
+    scheduledReminderMessage,
+    scheduledTasksPicture,
+    scheduledTasksReminder,
+} from './consts'
 import { createDaylyCronDateFrom9To18, createCronTasks } from './services/scheduler'
 import { getRequest, HttpRequest } from './transport/httpRequest'
+import { getTextSize } from './utils/text'
 
 const telegram: Telegram = new Telegram(process.env.BOT_TOKEN as string)
 const bot = new Telegraf(process.env.BOT_TOKEN as string)
@@ -23,10 +34,11 @@ createCronTasks(
 createCronTasks(daylyTasksCount, scheduledTasksPicture, createDaylyCronDateFrom9To18, async () => {
     const { compliment } = await getRequest(req, 'complimentr.com', '/api')
     const complimentWithSignature = `${compliment}. ${botSignature}`
+    const textSize = getTextSize(complimentWithSignature, defaultTextLength, defaultTextSize)
 
     telegram.sendPhoto(
         process.env.CHAT_ID as string,
-        { url: `${catPhotoUrl}/says/${complimentWithSignature}` }
+        { url: `${catPhotoUrl}/says/${complimentWithSignature}?size=${textSize}` }
     )
 })
 

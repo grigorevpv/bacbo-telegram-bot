@@ -13,3 +13,7 @@ export const catPhotoUrl = 'https://cataas.com/cat'
 // Schedule task names
 export const scheduledTasksReminder: ScheduledTaskNameReminder = 'reminder'
 export const scheduledTasksPicture: ScheduledTaskNamePicture = 'picture'
+
+// Text params
+export const defaultTextLength = 44
+export const defaultTextSize = 34
