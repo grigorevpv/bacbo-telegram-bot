@@ -50,15 +50,15 @@ bot.on('message', async (ctx, next) => {
             const { compliment } = await getRequest(req, 'complimentr.com', '/api')
             const complimentWithSignature = `${compliment}. ${botSignature}`
 
-            // telegram.sendMessage(
-            //     process.env.CHAT_ID as string,
-            //     complimentWithSignature
-            // )
-            telegram.sendPoll(
+            telegram.sendMessage(
                 process.env.CHAT_ID as string,
-                'Поливался ли цветок сегодня?',
-                ['Да', 'Нет'],
+                complimentWithSignature
             )
+            // telegram.sendPoll(
+            //     process.env.CHAT_ID as string,
+            //     'Поливался ли цветок сегодня?',
+            //     ['Да', 'Нет'],
+            // )
         }
     } catch (e) {
         console.error(e)
